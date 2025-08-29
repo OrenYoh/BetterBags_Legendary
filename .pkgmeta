@@ -1,0 +1,6 @@
+package-as: BetterBags_Legendary
+
+ignore:
+  - .github
+  - .gitignore
+  - .pkgmeta
