@@ -1,4 +1,4 @@
-## Interface: 110200, 50500, 40402, 30405, 20504, 11507
+## Interface: 110200, 50501, 40402, 30405, 20504, 11507
 ## Title: BetterBags - Legendary
 ## Category: Inventory
 ## Notes: Adds a Legendary items filter to BetterBags.
