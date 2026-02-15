@@ -103,10 +103,5 @@ addon.options = {
             addon.db.independentToken = value
             updateCategory(value, L["OPTIONS_CAT_TOKEN"])
         end
-    },
-    f = {
-        name = function()
-            config.configFrame.layout:AddInlineSubSection({ title = "", description = "" })
-        end,
-    },
+    }
 }

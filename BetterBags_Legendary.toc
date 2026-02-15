@@ -3,7 +3,7 @@
 ## Category: Inventory
 ## Notes: Adds a Legendary items filter to BetterBags.
 ## Author: OrenYoh
-## Version: 2.1.0
+## Version: 2.1.1
 ## IconTexture: Interface\AddOns\BetterBags_Legendary\images\legendary
 ## Dependencies: BetterBags
 ## SavedVariablesPerCharacter: BetterBags_LegendaryDB
