@@ -17,7 +17,7 @@ local events = BetterBags:GetModule('Events')
 -----------------------------
 
 local debounceTimer
-local refreshButton
+local pendingCategories = {}
 
 local updateSavedVariables = function()
     BetterBags_LegendaryDB = addon.db
@@ -28,88 +28,85 @@ local updateCategory = function(categoryEnabled, categoryName)
         debounceTimer:Cancel()
     end
 
+    -- store the latest requested state for this category
+    pendingCategories[categoryName] = categoryEnabled
+
     -- We wait for the value not to be changed for 1 second before refreshing the categories
     debounceTimer = C_Timer.NewTimer(1, function()
         updateSavedVariables()
 
-        if (categoryEnabled) then
-            addon:GetOrCreateBetterBagsCategory(categoryName)
-            categories:WipeCategory(L["CATEGORY_NAME"])
-            categories:WipeCategory(categoryName)
-        else
-            categories:WipeCategory(L["CATEGORY_NAME"])
-            categories:WipeCategory(categoryName)
-            categories:DeleteCategory(categoryName)
+        -- Process all pending category updates
+        for name, enabled in pairs(pendingCategories) do
+            if (enabled) then
+                addon:GetOrCreateBetterBagsCategory(name)
+                categories:WipeCategory(L["CATEGORY_NAME"])
+                categories:WipeCategory(name)
+            else
+                categories:WipeCategory(L["CATEGORY_NAME"])
+                categories:WipeCategory(name)
+                categories:DeleteCategory(name)
+            end
+        end
+
+        -- clear the pending table
+        for k in pairs(pendingCategories) do
+            pendingCategories[k] = nil
         end
 
         events:SendMessage('bags/FullRefreshAll')
-        refreshButton:Enable()
     end)
 end
 
 --- Options panel
 -----------------------------
-addon.options = function()
-    return {
-        legendaryOptions = {
-            name = function()
-                addon.frame:CreateDescription(L["OPTIONS_DESC"], { top = 20 })
-                addon.frame:CreateTitle(L["OPTIONS_INDE_CAT"])
-
-                addon.frame:CreateCheckbox({
-                    title = L["OPTIONS_CAT_LEGENDARY"],
-                    getValue = function(_)
-                        return addon.db.independentLegendary
-                    end,
-                    setValue = function(_, value)
-                        addon.db.independentLegendary = value
-                        updateCategory(value, L["OPTIONS_CAT_LEGENDARY"])
-                    end
-                })
-
-                addon.frame:CreateCheckbox({
-                    title = L["OPTIONS_CAT_ARTIFACT"],
-                    getValue = function(_)
-                        return addon.db.independentArtifact
-                    end,
-                    setValue = function(_, value)
-                        addon.db.independentArtifact = value
-                        updateCategory(value, L["OPTIONS_CAT_ARTIFACT"])
-                    end
-                })
-
-                addon.frame:CreateCheckbox({
-                    title = L["OPTIONS_CAT_HEIRLOOM"],
-                    getValue = function(_)
-                        return addon.db.independentHeirloom
-                    end,
-                    setValue = function(_, value)
-                        addon.db.independentHeirloom = value
-                        updateCategory(value, L["OPTIONS_CAT_HEIRLOOM"])
-                    end
-                })
-
-                addon.frame:CreateCheckbox({
-                    title = L["OPTIONS_CAT_TOKEN"],
-                    getValue = function(_)
-                        return addon.db.independentToken
-                    end,
-                    setValue = function(_, value)
-                        addon.db.independentToken = value
-                        updateCategory(value, L["OPTIONS_CAT_TOKEN"])
-                    end
-                })
-
-                refreshButton = addon.frame:CreateButton({
-                    title = L["OPTIONS_REFRESH"],
-                    align = "CENTER",
-                    disabled = true,
-                    onClick = function()
-                        refreshButton:Disable()
-                        ConsoleExec("reloadui")
-                    end
-                })
-            end,
-        }
-    }
-end
+addon.options = {
+    a = {
+        name = function()
+            config.configFrame.layout:AddInlineSubSection({
+                title = L["OPTIONS_CAT_LEGENDARY"],
+                description = L["OPTIONS_DESC"],
+            })
+        end,
+    },
+    b = {
+        type = "toggle",
+        name = L["OPTIONS_CAT_LEGENDARY"],
+        get = function() return addon.db.independentLegendary end,
+        set = function(_, value)
+            addon.db.independentLegendary = value
+            updateCategory(value, L["OPTIONS_CAT_LEGENDARY"])
+        end
+    },
+    c = {
+        type = "toggle",
+        name = L["OPTIONS_CAT_ARTIFACT"],
+        get = function() return addon.db.independentArtifact end,
+        set = function(_, value)
+            addon.db.independentArtifact = value
+            updateCategory(value, L["OPTIONS_CAT_ARTIFACT"])
+        end
+    },
+    d = {
+        type = "toggle",
+        name = L["OPTIONS_CAT_HEIRLOOM"],
+        get = function() return addon.db.independentHeirloom end,
+        set = function(_, value)
+            addon.db.independentHeirloom = value
+            updateCategory(value, L["OPTIONS_CAT_HEIRLOOM"])
+        end
+    },
+    e = {
+        type = "toggle",
+        name = L["OPTIONS_CAT_TOKEN"],
+        get = function() return addon.db.independentToken end,
+        set = function(_, value)
+            addon.db.independentToken = value
+            updateCategory(value, L["OPTIONS_CAT_TOKEN"])
+        end
+    },
+    f = {
+        name = function()
+            config.configFrame.layout:AddInlineSubSection({ title = "", description = "" })
+        end,
+    },
+}

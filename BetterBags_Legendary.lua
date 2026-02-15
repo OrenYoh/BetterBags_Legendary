@@ -41,7 +41,7 @@ addon.eventFrame:SetScript("OnEvent", function(_, event, ...)
     end
 end)
 
-local function GetOrCreateBetterBagsCategory(categoryName)
+function addon:GetOrCreateBetterBagsCategory(categoryName)
     local categoryAlreadyExists = categories:GetCategoryByName(categoryName)
 
     if not categoryAlreadyExists then
@@ -70,25 +70,24 @@ function addon:OnReady()
     categories:WipeCategory(addon.context:Copy(), L["CATEGORY_NAME"])
 
     -- Add addon config to BetterBags
-    config:AddPluginConfig(L["CATEGORY_NAME"], addon.options())
-    --config:AddPluginConfig(L["CATEGORY_NAME"], addon.optionsOld)
+    config:AddPluginConfig(L["CATEGORY_NAME"], addon.options)
 
     -- Create addon category if it doesn't already exist
-    GetOrCreateBetterBagsCategory(L["CATEGORY_NAME"])
+    addon:GetOrCreateBetterBagsCategory(L["CATEGORY_NAME"])
 
     if (addon.db.independentLegendary) then
-        GetOrCreateBetterBagsCategory(L["OPTIONS_CAT_LEGENDARY"])
+        addon:GetOrCreateBetterBagsCategory(L["OPTIONS_CAT_LEGENDARY"])
     end
 
     if (addon.db.independentArtifact) then
-        GetOrCreateBetterBagsCategory(L["OPTIONS_CAT_ARTIFACT"])
+        addon:GetOrCreateBetterBagsCategory(L["OPTIONS_CAT_ARTIFACT"])
     end
 
     if (addon.db.independentHeirloom) then
-        GetOrCreateBetterBagsCategory(L["OPTIONS_CAT_HEIRLOOM"])
+        addon:GetOrCreateBetterBagsCategory(L["OPTIONS_CAT_HEIRLOOM"])
     end
 
     if (addon.db.independentToken) then
-        GetOrCreateBetterBagsCategory(L["OPTIONS_CAT_TOKEN"])
+        addon:GetOrCreateBetterBagsCategory(L["OPTIONS_CAT_TOKEN"])
     end
 end
