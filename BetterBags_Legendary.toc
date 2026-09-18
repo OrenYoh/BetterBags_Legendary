@@ -1,9 +1,9 @@
-## Interface: 120100, 50504, 40402, 38002, 30405, 20506, 11509
+## Interface: 120100, 50504, 40402, 38002, 30405, 20506, 16001, 11509
 ## Title: BetterBags - Legendary
 ## Category: Inventory
 ## Notes: Adds a Legendary items filter to BetterBags.
 ## Author: OrenYoh
-## Version: 2.1.4
+## Version: 2.2.0
 ## IconTexture: Interface\AddOns\BetterBags_Legendary\images\legendary
 ## Dependencies: BetterBags
 ## SavedVariablesPerCharacter: BetterBags_LegendaryDB
