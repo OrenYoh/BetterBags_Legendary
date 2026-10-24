@@ -45,7 +45,7 @@ function addon:GetOrCreateBetterBagsCategory(categoryName)
     local categoryAlreadyExists = categories:GetCategoryByName(categoryName)
 
     if not categoryAlreadyExists then
-        categories:CreateCategory({
+        categories:CreateCategory(addon.context:Copy(), {
             name = categoryName,
             save = true,
             itemList = {},

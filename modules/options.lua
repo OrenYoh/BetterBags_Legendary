@@ -10,8 +10,6 @@ local addon = LibStub('AceAddon-3.0'):GetAddon(addonName)
 local BetterBags = LibStub('AceAddon-3.0'):GetAddon("BetterBags")
 ---@class Categories: AceModule
 local categories = BetterBags:GetModule('Categories')
----@class Config: AceModule
-local config = BetterBags:GetModule('Config')
 ---@class Events: AceModule
 local events = BetterBags:GetModule('Events')
 -----------------------------
@@ -39,12 +37,11 @@ local updateCategory = function(categoryEnabled, categoryName)
         for name, enabled in pairs(pendingCategories) do
             if (enabled) then
                 addon:GetOrCreateBetterBagsCategory(name)
-                categories:WipeCategory(L["CATEGORY_NAME"])
-                categories:WipeCategory(name)
-            else
-                categories:WipeCategory(L["CATEGORY_NAME"])
-                categories:WipeCategory(name)
-                categories:DeleteCategory(name)
+            end
+            categories:WipeCategory(addon.context:Copy(), L["CATEGORY_NAME"])
+            categories:WipeCategory(addon.context:Copy(), name)
+            if (not enabled) then
+                categories:DeleteCategory(addon.context:Copy(), name)
             end
         end
 
@@ -53,7 +50,7 @@ local updateCategory = function(categoryEnabled, categoryName)
             pendingCategories[k] = nil
         end
 
-        events:SendMessage('bags/FullRefreshAll')
+        events:SendMessage(addon.context:Copy(), 'bags/FullRefreshAll')
     end)
 end
 
@@ -61,15 +58,14 @@ end
 -----------------------------
 addon.options = {
     a = {
-        name = function()
-            config.configFrame.layout:AddInlineSubSection({
-                title = L["OPTIONS_CAT_LEGENDARY"],
-                description = L["OPTIONS_DESC"],
-            })
-        end,
+        type = "description",
+        order = 1,
+        name = L["OPTIONS_DESC"],
     },
     b = {
         type = "toggle",
+        order = 2,
+        width = "full",
         name = L["OPTIONS_CAT_LEGENDARY"],
         get = function() return addon.db.independentLegendary end,
         set = function(_, value)
@@ -79,6 +75,8 @@ addon.options = {
     },
     c = {
         type = "toggle",
+        order = 3,
+        width = "full",
         name = L["OPTIONS_CAT_ARTIFACT"],
         get = function() return addon.db.independentArtifact end,
         set = function(_, value)
@@ -88,6 +86,8 @@ addon.options = {
     },
     d = {
         type = "toggle",
+        order = 4,
+        width = "full",
         name = L["OPTIONS_CAT_HEIRLOOM"],
         get = function() return addon.db.independentHeirloom end,
         set = function(_, value)
@@ -97,6 +97,8 @@ addon.options = {
     },
     e = {
         type = "toggle",
+        order = 5,
+        width = "full",
         name = L["OPTIONS_CAT_TOKEN"],
         get = function() return addon.db.independentToken end,
         set = function(_, value)
